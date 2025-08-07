@@ -7,59 +7,58 @@ const qualitySelector = document.getElementById("qualitySelector");
 let allChannels = [];
 let hls;
 
-// --- সব ফিচারের জন্য প্রয়োজনীয় ভ্যারিয়েবল ---
 const CHANNELS_PER_LOAD = 20;
 let currentFilteredChannels = [];
 let pageToLoad = 1;
 let isLoading = false;
 let currentChannelIndex = -1;
-// -------------------------------------------
+
+// --- আপনার সব M3U ফাইলের লিঙ্ক এখানে যোগ করুন ---
+const playlistUrls = [
+    "index.m3u",
+    "videos.m3u",
+    // আপনি এখানে আরও লিঙ্ক যোগ করতে পারেন
+];
+// ---------------------------------------------------
 
 
-// --- Favorite Feature এর জন্য নতুন ফাংশন ---
-function getFavorites() {
-    return JSON.parse(localStorage.getItem('myFavoriteChannels')) || [];
-}
+async function loadAllPlaylists() {
+    channelList.innerHTML = '⏳ Loading all playlists...';
+    try {
+        // সব প্লেলিস্ট একসাথে ফেচ করার জন্য Promise.all ব্যবহার করা হয়েছে
+        const responses = await Promise.all(
+            playlistUrls.map(url => fetch(url).catch(e => console.error(`Failed to fetch ${url}`, e)))
+        );
 
-function saveFavorites(favorites) {
-    localStorage.setItem('myFavoriteChannels', JSON.stringify(favorites));
-}
+        // সব রেসপন্স থেকে টেক্সট ডেটা বের করা হচ্ছে
+        const textPromises = responses.map(res => {
+            if (res && res.ok) {
+                return res.text();
+            }
+            return Promise.resolve(""); // যদি কোনো একটি লিঙ্ক ফেল করে
+        });
+        
+        const allTexts = await Promise.all(textPromises);
 
-function toggleFavorite(event, channel, starIcon) {
-    event.stopPropagation(); // এই লাইনের কারণে চ্যানেলে ক্লিক লাগবে না, শুধু বাটনে কাজ করবে
-    let favorites = getFavorites();
-    const index = favorites.findIndex(fav => fav.name === channel.name && fav.url === channel.url);
-
-    if (index > -1) {
-        favorites.splice(index, 1);
-        starIcon.classList.remove('favorited');
-    } else {
-        favorites.push(channel);
-        starIcon.classList.add('favorited');
-    }
-    saveFavorites(favorites);
-
-    // যদি ফেভারিট ক্যাটাগরিতে থাকা অবস্থায় কোনো চ্যানেল আনফেভারিট করা হয়
-    if (categoryFilter.value === 'Favorites') {
+        // সব প্লেলিস্টের ডেটা একত্রিত করে একটি বড় অ্যারে তৈরি করা
+        let combinedChannels = [];
+        allTexts.forEach(text => {
+            if (text) {
+                const channels = parseM3U(text);
+                combinedChannels = combinedChannels.concat(channels);
+            }
+        });
+        
+        allChannels = combinedChannels;
+        populateCategories();
         setupInitialView();
+
+    } catch (error) {
+        channelList.innerHTML = `<div style="color: red; padding: 20px;">Error: Could not load playlists.</div>`;
+        console.error(error);
     }
 }
-// ------------------------------------------
 
-
-async function loadPlaylist() {
-  try {
-    const res = await fetch("index.m3u");
-    if (!res.ok) throw new Error(`Failed to load playlist: ${res.status}`);
-    const text = await res.text();
-    allChannels = parseM3U(text);
-    populateCategories();
-    setupInitialView();
-  } catch (error) {
-    channelList.innerHTML = `<div style="color: red; padding: 20px;">Error: Could not load playlist.</div>`;
-    console.error(error);
-  }
-}
 
 function parseM3U(data) {
   const lines = data.split("\n");
@@ -85,12 +84,11 @@ function parseM3U(data) {
 
 function populateCategories() {
   const groups = new Set(allChannels.map(ch => ch.group));
-  categoryFilter.innerHTML = `<option value="">📁 All Categories</option>`;
+  categoryFilter.innerHTML = `<option value="">All Categories</option>`;
   
-  // ফেভারিট অপশন যোগ করা
   const favOpt = document.createElement("option");
   favOpt.value = "Favorites";
-  favOpt.textContent = "⭐ Favorites";
+  favOpt.textContent = "Favorites";
   categoryFilter.appendChild(favOpt);
 
   groups.forEach(group => {
@@ -147,20 +145,18 @@ function loadMoreChannels() {
         const nameSpan = document.createElement("span");
         nameSpan.textContent = ch.name;
         
-        // --- ফেভারিট বাটন তৈরি ও যোগ করা ---
         const favoriteBtn = document.createElement("span");
         favoriteBtn.className = "favorite-btn";
-        favoriteBtn.innerHTML = "&#9733;"; // Star character
+        favoriteBtn.innerHTML = "&#9733;";
         
         if (getFavorites().some(fav => fav.name === ch.name && fav.url === ch.url)) {
             favoriteBtn.classList.add('favorited');
         }
         favoriteBtn.onclick = (event) => toggleFavorite(event, ch, favoriteBtn);
-        // ------------------------------------
-
+        
         div.appendChild(img);
         div.appendChild(nameSpan);
-        div.appendChild(favoriteBtn); // বাটনটি div এর সাথে যোগ করা
+        div.appendChild(favoriteBtn);
         channelList.appendChild(div);
     });
 
@@ -193,7 +189,7 @@ function playStream(channel, index) {
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         video.play();
-        qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
+        qualitySelector.innerHTML = "";
         const autoBtn = document.createElement("button");
         autoBtn.textContent = "Auto";
         autoBtn.onclick = () => { hls.currentLevel = -1; };
@@ -228,8 +224,37 @@ function playNextVideo() {
   playStream(nextChannel, nextIndex);
 }
 
+// Favorite Feature Functions
+function getFavorites() {
+    return JSON.parse(localStorage.getItem('myFavoriteChannels')) || [];
+}
+
+function saveFavorites(favorites) {
+    localStorage.setItem('myFavoriteChannels', JSON.stringify(favorites));
+}
+
+function toggleFavorite(event, channel, starIcon) {
+    event.stopPropagation();
+    let favorites = getFavorites();
+    const index = favorites.findIndex(fav => fav.name === channel.name && fav.url === channel.url);
+
+    if (index > -1) {
+        favorites.splice(index, 1);
+        starIcon.classList.remove('favorited');
+    } else {
+        favorites.push(channel);
+        starIcon.classList.add('favorited');
+    }
+    saveFavorites(favorites);
+
+    if (categoryFilter.value === 'Favorites') {
+        setupInitialView();
+    }
+}
+
 video.addEventListener('ended', playNextVideo);
 searchInput.addEventListener("input", setupInitialView);
 categoryFilter.addEventListener("change", setupInitialView);
 
-loadPlaylist();
+// অ্যাপলিকেশন শুরু করার জন্য ফাংশন কল
+loadAllPlaylists();
