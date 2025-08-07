@@ -31,7 +31,7 @@ async function loadPlaylist() {
         const logo = logoMatch ? logoMatch[1] : "";
         const group = groupMatch ? groupMatch[1] : "Others";
         
-        if (url && name !== "Unnamed Channel") {
+        if (url && name && name !== "Unnamed Channel") {
           allChannels.push({ name, logo, url, group });
         }
       }
@@ -78,7 +78,7 @@ function showChannels() {
   filtered.forEach((ch, index) => {
     const div = document.createElement("div");
     div.className = "channel";
-    div.onclick = () => playStream(ch, index); 
+    div.onclick = () => playStream(ch, index, div); 
 
     const img = document.createElement("img");
     img.src = ch.logo || "https://via.placeholder.com/50";
@@ -95,8 +95,15 @@ function showChannels() {
 
 let hls;
 
-function playStream(channel, index) {
+function playStream(channel, index, channelElement) {
   currentChannelIndex = index;
+
+  const allChannelDivs = document.querySelectorAll('.channel');
+  allChannelDivs.forEach(d => d.classList.remove('active'));
+
+  if (channelElement) {
+    channelElement.classList.add('active');
+  }
 
   if (hls) {
     hls.destroy();
@@ -113,7 +120,7 @@ function playStream(channel, index) {
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         video.play();
         const levels = hls.levels;
-        qualitySelector.innerHTML = "<b>Quality:</b> ";
+        qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
 
         const autoBtn = document.createElement("button");
         autoBtn.textContent = "Auto";
@@ -139,7 +146,6 @@ function playStream(channel, index) {
   }
 }
 
-
 function playNextVideo() {
   if (currentlyDisplayedChannels.length === 0 || currentChannelIndex === -1) {
     return;
@@ -147,11 +153,14 @@ function playNextVideo() {
 
   const nextIndex = (currentChannelIndex + 1) % currentlyDisplayedChannels.length;
   const nextChannel = currentlyDisplayedChannels[nextIndex];
-  playStream(nextChannel, nextIndex);
+  
+  const allChannelDivs = document.querySelectorAll('.channel');
+  const nextChannelElement = allChannelDivs[nextIndex];
+
+  playStream(nextChannel, nextIndex, nextChannelElement);
 }
 
 video.addEventListener('ended', playNextVideo);
-
 searchInput.addEventListener("input", showChannels);
 categoryFilter.addEventListener("change", showChannels);
 
