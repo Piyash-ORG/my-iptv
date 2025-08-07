@@ -1,33 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📺 IPTV Player</title>
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub M3U Player</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-</head>
-<body>
+</head><body>
   <header>
-    <h1>📺 IPTV Player</h1>
-  </header>
+    <h1>📺 GitHub M3U Player</h1>
+    <button id="theme-toggle">🌙</button>
+  </header>  <main>
+    <aside>
+      <h2>Playlist</h2>
+      <ul id="playlist"></ul>
+    </aside><section class="player">
+  <video id="videoPlayer" controls autoplay></video>
+</section>
 
-  <div class="main-container">
-    <aside class="sidebar">
-      <div class="search-filter">
-        <input type="text" id="search" placeholder="🔍 Search channels...">
-        <select id="categoryFilter"></select>
-      </div>
-      <div id="channelList" class="channel-list"></div>
-    </aside>
-
-    <main class="player-section">
-      <div id="channelTitle" class="channel-title">Select a channel</div>
-      <video id="video" controls autoplay></video>
-      <div id="qualitySelector" class="quality-controls"></div>
-    </main>
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+  </main>  <footer>
+    <p>Hosted on GitHub Pages | Made by Piyash</p>
+  </footer>  <script src="script.js"></script></body></html>
