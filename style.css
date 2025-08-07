@@ -91,3 +91,26 @@ video {
 .channel.active {
   border: 2px solid lime;
 }
+/* Ad Banner Style */
+.ad-banner {
+    margin: 15px auto 25px auto;
+    padding: 15px;
+    background-color: #004d40; /* একটি ভিন্ন সবুজ রঙ */
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.ad-banner a {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1em;
+    display: block;
+    transition: transform 0.2s ease-in-out;
+}
+
+.ad-banner a:hover {
+    transform: scale(1.05); /* হোভার করলে হালকা জুম হবে */
+}
