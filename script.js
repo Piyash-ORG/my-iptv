@@ -7,11 +7,45 @@ const qualitySelector = document.getElementById("qualitySelector");
 let allChannels = [];
 let hls;
 
+// --- সব ফিচারের জন্য প্রয়োজনীয় ভ্যারিয়েবল ---
 const CHANNELS_PER_LOAD = 20;
 let currentFilteredChannels = [];
 let pageToLoad = 1;
 let isLoading = false;
 let currentChannelIndex = -1;
+// -------------------------------------------
+
+
+// --- Favorite Feature এর জন্য নতুন ফাংশন ---
+function getFavorites() {
+    return JSON.parse(localStorage.getItem('myFavoriteChannels')) || [];
+}
+
+function saveFavorites(favorites) {
+    localStorage.setItem('myFavoriteChannels', JSON.stringify(favorites));
+}
+
+function toggleFavorite(event, channel, starIcon) {
+    event.stopPropagation(); // এই লাইনের কারণে চ্যানেলে ক্লিক লাগবে না, শুধু বাটনে কাজ করবে
+    let favorites = getFavorites();
+    const index = favorites.findIndex(fav => fav.name === channel.name && fav.url === channel.url);
+
+    if (index > -1) {
+        favorites.splice(index, 1);
+        starIcon.classList.remove('favorited');
+    } else {
+        favorites.push(channel);
+        starIcon.classList.add('favorited');
+    }
+    saveFavorites(favorites);
+
+    // যদি ফেভারিট ক্যাটাগরিতে থাকা অবস্থায় কোনো চ্যানেল আনফেভারিট করা হয়
+    if (categoryFilter.value === 'Favorites') {
+        setupInitialView();
+    }
+}
+// ------------------------------------------
+
 
 async function loadPlaylist() {
   try {
@@ -52,6 +86,13 @@ function parseM3U(data) {
 function populateCategories() {
   const groups = new Set(allChannels.map(ch => ch.group));
   categoryFilter.innerHTML = `<option value="">📁 All Categories</option>`;
+  
+  // ফেভারিট অপশন যোগ করা
+  const favOpt = document.createElement("option");
+  favOpt.value = "Favorites";
+  favOpt.textContent = "⭐ Favorites";
+  categoryFilter.appendChild(favOpt);
+
   groups.forEach(group => {
     const opt = document.createElement("option");
     opt.value = group;
@@ -61,66 +102,81 @@ function populateCategories() {
 }
 
 function setupInitialView() {
-  const search = searchInput.value.toLowerCase();
-  const selectedGroup = categoryFilter.value;
+    const search = searchInput.value.toLowerCase();
+    const selectedGroup = categoryFilter.value;
 
-  currentFilteredChannels = allChannels.filter(ch => {
-    return (
-      ch.name.toLowerCase().includes(search) &&
-      (selectedGroup === "" || ch.group === selectedGroup)
-    );
-  });
+    if (selectedGroup === "Favorites") {
+        currentFilteredChannels = getFavorites().filter(ch => ch.name.toLowerCase().includes(search));
+    } else {
+        currentFilteredChannels = allChannels.filter(ch => {
+            return (
+                ch.name.toLowerCase().includes(search) &&
+                (selectedGroup === "" || ch.group === selectedGroup)
+            );
+        });
+    }
 
-  channelList.innerHTML = "";
-  pageToLoad = 1;
-  loadMoreChannels();
+    channelList.innerHTML = "";
+    pageToLoad = 1;
+    loadMoreChannels();
 }
 
 function loadMoreChannels() {
-  if (isLoading) return;
-  isLoading = true;
+    if (isLoading) return;
+    isLoading = true;
 
-  const startIndex = (pageToLoad - 1) * CHANNELS_PER_LOAD;
-  const endIndex = startIndex + CHANNELS_PER_LOAD;
+    const startIndex = (pageToLoad - 1) * CHANNELS_PER_LOAD;
+    const endIndex = startIndex + CHANNELS_PER_LOAD;
+    const channelsToRender = currentFilteredChannels.slice(startIndex, endIndex);
 
-  const channelsToRender = currentFilteredChannels.slice(startIndex, endIndex);
+    if (channelsToRender.length === 0 && pageToLoad === 1) {
+        channelList.innerHTML = `<div style="padding: 20px;">Not found.</div>`;
+    }
 
-  if (channelsToRender.length === 0 && pageToLoad === 1) {
-    channelList.innerHTML = `<div style="padding: 20px;">Not found.</div>`;
-  }
+    channelsToRender.forEach((ch, localIndex) => {
+        const globalIndex = startIndex + localIndex;
+        const div = document.createElement("div");
+        div.className = "channel";
+        div.dataset.index = globalIndex;
+        div.onclick = () => playStream(ch, globalIndex);
 
-  channelsToRender.forEach((ch, localIndex) => {
-    const globalIndex = startIndex + localIndex;
-    const div = document.createElement("div");
-    div.className = "channel";
-    div.dataset.index = globalIndex;
-    div.onclick = () => playStream(ch, globalIndex);
+        const img = document.createElement("img");
+        img.src = ch.logo || "https://via.placeholder.com/50";
+        img.onerror = () => { img.src = "https://via.placeholder.com/50"; };
 
-    const img = document.createElement("img");
-    img.src = ch.logo || "https://via.placeholder.com/50";
-    img.onerror = () => { img.src = "https://via.placeholder.com/50"; };
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = ch.name;
+        
+        // --- ফেভারিট বাটন তৈরি ও যোগ করা ---
+        const favoriteBtn = document.createElement("span");
+        favoriteBtn.className = "favorite-btn";
+        favoriteBtn.innerHTML = "&#9733;"; // Star character
+        
+        if (getFavorites().some(fav => fav.name === ch.name && fav.url === ch.url)) {
+            favoriteBtn.classList.add('favorited');
+        }
+        favoriteBtn.onclick = (event) => toggleFavorite(event, ch, favoriteBtn);
+        // ------------------------------------
 
-    const nameSpan = document.createElement("span");
-    nameSpan.textContent = ch.name;
+        div.appendChild(img);
+        div.appendChild(nameSpan);
+        div.appendChild(favoriteBtn); // বাটনটি div এর সাথে যোগ করা
+        channelList.appendChild(div);
+    });
 
-    div.appendChild(img);
-    div.appendChild(nameSpan);
-    channelList.appendChild(div);
-  });
-
-  pageToLoad++;
-  isLoading = false;
+    pageToLoad++;
+    isLoading = false;
 }
 
 channelList.addEventListener('scroll', () => {
-  if (channelList.scrollTop + channelList.clientHeight >= channelList.scrollHeight - 100) {
-    loadMoreChannels();
-  }
+    if (channelList.scrollTop + channelList.clientHeight >= channelList.scrollHeight - 100) {
+        loadMoreChannels();
+    }
 });
 
 function playStream(channel, index) {
   currentChannelIndex = index;
-
+  
   document.querySelectorAll('.channel').forEach(d => d.classList.remove('active'));
   const activeElement = document.querySelector(`.channel[data-index="${index}"]`);
   if (activeElement) {
@@ -137,7 +193,7 @@ function playStream(channel, index) {
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         video.play();
-        qualitySelector.innerHTML = "<b></b> ";
+        qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
         const autoBtn = document.createElement("button");
         autoBtn.textContent = "Auto";
         autoBtn.onclick = () => { hls.currentLevel = -1; };
@@ -168,7 +224,7 @@ function playNextVideo() {
   if (!nextElement) {
     loadMoreChannels();
   }
-
+  
   playStream(nextChannel, nextIndex);
 }
 
