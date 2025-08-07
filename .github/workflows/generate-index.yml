@@ -10,28 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Combine .m3u files into index.m3u
-      run: |
-        echo "#EXTM3U" > index.m3u
-        for file in streams/*.m3u; do
-          echo -e "\n# ===== $(basename "$file") =====" >> index.m3u
-          grep -v '^#EXTM3U' "$file" >> index.m3u
-        done
+      - name: Combine .m3u files into index.m3u
+        run: |
+          echo "#EXTM3U" > index.m3u
+          for file in streams/*.m3u; do
+            echo -e "\n# ===== $(basename "$file") =====" >> index.m3u
+            grep -v '^#EXTM3U' "$file" >> index.m3u
+          done
 
-    - name: Set up git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Setup git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Commit and push if changed
-      run: |
-        git add index.m3u
-        if git diff --cached --quiet; then
-          echo "No changes to commit."
-        else
-          git commit -m "🔄 Auto-update index.m3u"
-          git push
-        fifi
+      - name: Commit and push if changed
+        run: |
+          git add index.m3u
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "🔄 Auto-update index.m3u"
+            git push
+          fi
