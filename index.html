@@ -1,35 +1,24 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid View M3U Player</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>📺 My IPTV Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header class="main-header">
-            <h1>Channel Grid</h1>
-            <div class="controls">
-                <div id="categoryFilters" class="category-filters"></div>
-                <input type="text" id="searchInput" placeholder="Search channels...">
-            </div>
-        </header>
+  <h1>📺 My IPTV</h1>
+  <input type="text" id="search" placeholder="🔍 Search channels..." />
+  <select id="categoryFilter">
+    <option value="">📁 All Categories</option>
+  </select>
 
-        <main id="channel-grid" class="channel-grid">
-            </main>
-    </div>
+  <video id="video" controls autoplay></video>
+  <h2 id="channelTitle">Select a channel to play</h2> <!-- ✅ নতুন লাইন -->
 
-    <div id="player-modal" class="player-modal">
-        <div class="modal-content">
-            <button id="close-modal" class="close-modal-btn">&times;</button>
-            <video id="videoPlayer" controls autoplay></video>
-            <h3 id="nowPlaying"></h3>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="script.js"></script>
+  <div id="qualitySelector"></div>
+  <div id="channelList">⏳ Loading channels...</div>
+  <script src="script.js"></script>
 </body>
 </html>
