@@ -1,116 +1,24 @@
-body {
-  background: #121212;
-  color: #eee;
-  font-family: sans-serif;
-  text-align: center;
-  padding: 20px;
-  margin: 0;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-video {
-  width: 100%;
-  max-width: 720px;
-  background: #000;
-  border-radius: 10px;
-  margin: 10px auto;
-  display: block;
-}
-
-.controls {
-  margin-bottom: 15px;
-}
-
-#search,
-#categoryFilter {
-  padding: 10px;
-  margin: 5px;
-  width: 90%;
-  max-width: 350px;
-  border-radius: 5px;
-  border: none;
-  background-color: #1f1f1f;
-  color: #eee;
-}
-
-#channelList {
-  max-height: 400px;
-  overflow-y: auto;
-  border: 1px solid #333;
-  border-radius: 8px;
-  margin: 20px auto;
-  max-width: 600px;
-}
-
+/* Favorite Button Style */
 .channel {
-  background: #1f1f1f;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  margin: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-  text-align: left;
+  position: relative; /* বাটনটির সঠিক পজিশনিং এর জন্য */
 }
 
-.channel:hover {
-  background: #333;
+.favorite-btn {
+    font-size: 24px;
+    color: #555; /* ডিফল্ট রঙ */
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    padding: 5px; /* ক্লিক করার জন্য অতিরিক্ত জায়গা */
 }
 
-.channel img {
-  width: 50px;
-  height: 50px;
-  border-radius: 6px;
-  object-fit: contain;
-  background: white;
+.favorite-btn:hover {
+    transform: translateY(-50%) scale(1.2); /* হোভার করলে হালকা বড় হবে */
 }
 
-#qualitySelector {
-  margin: 10px;
-}
-
-#qualitySelector button {
-  margin: 5px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  background: #333;
-  color: white;
-  cursor: pointer;
-}
-
-#qualitySelector button:hover {
-  background: #555;
-}
-
-.channel.active {
-  border: 2px solid lime;
-}
-/* Ad Banner Style */
-.ad-banner {
-    margin: 15px auto 25px auto;
-    padding: 15px;
-    background-color: #004d40; /* একটি ভিন্ন সবুজ রঙ */
-    max-width: 600px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    text-align: center;
-}
-
-.ad-banner a {
-    color: #ffffff;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 1.1em;
-    display: block;
-    transition: transform 0.2s ease-in-out;
-}
-
-.ad-banner a:hover {
-    transform: scale(1.05); /* হোভার করলে হালকা জুম হবে */
+.favorite-btn.favorited {
+    color: #fdd835; /* ফেভারিট হলে হলুদ রঙ হবে */
 }
