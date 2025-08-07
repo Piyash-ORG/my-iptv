@@ -20,8 +20,7 @@ h1 {
   background-clip: text;
   text-fill-color: transparent;
 
-  letter-spacing: 2px; /* অক্ষরগুলোর মাঝে ফাঁকা জায়গা */
-  text-transform: uppercase; /* সব অক্ষর বড় হাতের করা হলো */
+  letter-spacing: 1px; /* অক্ষরগুলোর মাঝে ফাঁকা জায়গা */
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* লেখার পেছনে হালকা শ্যাডো */
   
   margin-bottom: 8px;
