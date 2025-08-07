@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern M3U Player</title>
+    <title>Grid View M3U Player</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <aside class="sidebar">
-            <header class="sidebar-header">
-                <input type="text" id="searchInput" placeholder="🔍 Search channels...">
-                <div id="categoryFilters" class="category-filters">
-                    </div>
-            </header>
-            <div id="playlist" class="playlist">
-                </div>
-        </aside>
+        <header class="main-header">
+            <h1>Channel Grid</h1>
+            <div class="controls">
+                <div id="categoryFilters" class="category-filters"></div>
+                <input type="text" id="searchInput" placeholder="Search channels...">
+            </div>
+        </header>
 
-        <main class="player-area">
-            <div class="video-container">
-                <video id="videoPlayer" controls autoplay></video>
-            </div>
-            <div id="nowPlaying" class="now-playing-info">
-                Select a channel to start playing
-            </div>
-        </main>
+        <main id="channel-grid" class="channel-grid">
+            </main>
+    </div>
+
+    <div id="player-modal" class="player-modal">
+        <div class="modal-content">
+            <button id="close-modal" class="close-modal-btn">&times;</button>
+            <video id="videoPlayer" controls autoplay></video>
+            <h3 id="nowPlaying"></h3>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
