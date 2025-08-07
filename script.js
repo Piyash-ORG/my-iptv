@@ -7,13 +7,11 @@ const qualitySelector = document.getElementById("qualitySelector");
 let allChannels = [];
 let hls;
 
-// --- সব ফিচারের জন্য প্রয়োজনীয় ভ্যারিয়েবল ---
 const CHANNELS_PER_LOAD = 20;
 let currentFilteredChannels = [];
 let pageToLoad = 1;
 let isLoading = false;
 let currentChannelIndex = -1;
-// ------------------------------------------
 
 async function loadPlaylist() {
   try {
@@ -63,67 +61,66 @@ function populateCategories() {
 }
 
 function setupInitialView() {
-    const search = searchInput.value.toLowerCase();
-    const selectedGroup = categoryFilter.value;
+  const search = searchInput.value.toLowerCase();
+  const selectedGroup = categoryFilter.value;
 
-    currentFilteredChannels = allChannels.filter(ch => {
-        return (
-            ch.name.toLowerCase().includes(search) &&
-            (selectedGroup === "" || ch.group === selectedGroup)
-        );
-    });
+  currentFilteredChannels = allChannels.filter(ch => {
+    return (
+      ch.name.toLowerCase().includes(search) &&
+      (selectedGroup === "" || ch.group === selectedGroup)
+    );
+  });
 
-    channelList.innerHTML = "";
-    pageToLoad = 1;
-    loadMoreChannels();
+  channelList.innerHTML = "";
+  pageToLoad = 1;
+  loadMoreChannels();
 }
 
 function loadMoreChannels() {
-    if (isLoading) return;
-    isLoading = true;
+  if (isLoading) return;
+  isLoading = true;
 
-    const startIndex = (pageToLoad - 1) * CHANNELS_PER_LOAD;
-    const endIndex = startIndex + CHANNELS_PER_LOAD;
+  const startIndex = (pageToLoad - 1) * CHANNELS_PER_LOAD;
+  const endIndex = startIndex + CHANNELS_PER_LOAD;
 
-    const channelsToRender = currentFilteredChannels.slice(startIndex, endIndex);
+  const channelsToRender = currentFilteredChannels.slice(startIndex, endIndex);
 
-    if (channelsToRender.length === 0 && pageToLoad === 1) {
-        channelList.innerHTML = `<div style="padding: 20px;">No channels found.</div>`;
-    }
+  if (channelsToRender.length === 0 && pageToLoad === 1) {
+    channelList.innerHTML = `<div style="padding: 20px;">Not found.</div>`;
+  }
 
-    channelsToRender.forEach((ch, localIndex) => {
-        const globalIndex = startIndex + localIndex; // চ্যানেলের আসল ইনডেক্স
-        const div = document.createElement("div");
-        div.className = "channel";
-        div.dataset.index = globalIndex; // প্রতিটি চ্যানেলকে চেনার জন্য ইনডেক্স যোগ করা
-        div.onclick = () => playStream(ch, globalIndex);
+  channelsToRender.forEach((ch, localIndex) => {
+    const globalIndex = startIndex + localIndex;
+    const div = document.createElement("div");
+    div.className = "channel";
+    div.dataset.index = globalIndex;
+    div.onclick = () => playStream(ch, globalIndex);
 
-        const img = document.createElement("img");
-        img.src = ch.logo || "https://via.placeholder.com/50";
-        img.onerror = () => { img.src = "https://via.placeholder.com/50"; };
+    const img = document.createElement("img");
+    img.src = ch.logo || "https://via.placeholder.com/50";
+    img.onerror = () => { img.src = "https://via.placeholder.com/50"; };
 
-        const nameSpan = document.createElement("span");
-        nameSpan.textContent = ch.name;
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = ch.name;
 
-        div.appendChild(img);
-        div.appendChild(nameSpan);
-        channelList.appendChild(div);
-    });
+    div.appendChild(img);
+    div.appendChild(nameSpan);
+    channelList.appendChild(div);
+  });
 
-    pageToLoad++;
-    isLoading = false;
+  pageToLoad++;
+  isLoading = false;
 }
 
 channelList.addEventListener('scroll', () => {
-    if (channelList.scrollTop + channelList.clientHeight >= channelList.scrollHeight - 100) {
-        loadMoreChannels();
-    }
+  if (channelList.scrollTop + channelList.clientHeight >= channelList.scrollHeight - 100) {
+    loadMoreChannels();
+  }
 });
 
 function playStream(channel, index) {
   currentChannelIndex = index;
-  
-  // "Now Playing" হাইলাইট করার জন্য
+
   document.querySelectorAll('.channel').forEach(d => d.classList.remove('active'));
   const activeElement = document.querySelector(`.channel[data-index="${index}"]`);
   if (activeElement) {
@@ -140,8 +137,7 @@ function playStream(channel, index) {
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         video.play();
-        // কোয়ালিটি সিলেকটর আবার যোগ করা হলো
-        qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
+        qualitySelector.innerHTML = "<b></b> ";
         const autoBtn = document.createElement("button");
         autoBtn.textContent = "Auto";
         autoBtn.onclick = () => { hls.currentLevel = -1; };
@@ -158,23 +154,21 @@ function playStream(channel, index) {
   } else {
     video.src = url;
     video.play();
-    qualitySelector.innerHTML = ""; // MP4 এর জন্য কোয়ালিটি সিলেকটর খালি রাখা
+    qualitySelector.innerHTML = "";
   }
 }
 
-// অটোপ্লে নেক্সট ফিচার আবার যোগ করা হলো
 function playNextVideo() {
   if (currentFilteredChannels.length === 0 || currentChannelIndex === -1) return;
 
   const nextIndex = (currentChannelIndex + 1) % currentFilteredChannels.length;
   const nextChannel = currentFilteredChannels[nextIndex];
 
-  // পরের চ্যানেলটি যদি লোড না হয়ে থাকে, তাহলে লোড করা
   const nextElement = document.querySelector(`.channel[data-index="${nextIndex}"]`);
   if (!nextElement) {
     loadMoreChannels();
   }
-  
+
   playStream(nextChannel, nextIndex);
 }
 
