@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub M3U Player</title>
-    <style>
-        body { font-family: sans-serif; display: flex; }
-        #playlist { width: 300px; height: 100vh; overflow-y: auto; border-right: 1px solid #ccc; }
-        #playlist div { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
-        #playlist div:hover { background-color: #f0f0f0; }
-        #player-container { flex-grow: 1; padding: 20px; }
-        video { width: 100%; max-width: 800px; background-color: #000; }
-    </style>
+    <title>Modern M3U Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <input type="text" id="searchInput" placeholder="🔍 Search channels...">
+                <div id="categoryFilters" class="category-filters">
+                    </div>
+            </header>
+            <div id="playlist" class="playlist">
+                </div>
+        </aside>
 
-    <div id="playlist">
-        </div>
-
-    <div id="player-container">
-        <video id="videoPlayer" controls autoplay></video>
+        <main class="player-area">
+            <div class="video-container">
+                <video id="videoPlayer" controls autoplay></video>
+            </div>
+            <div id="nowPlaying" class="now-playing-info">
+                Select a channel to start playing
+            </div>
+        </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="app.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
