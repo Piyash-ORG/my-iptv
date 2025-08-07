@@ -1,55 +1,24 @@
-// Github M3U Playlist Player // Features: .m3u parser, HLS streaming, quality selector, category filtering, logos, search, dark mode
-
-import React, { useEffect, useState } from "react"; import Hls from "hls.js";
-
-export default function M3UPlayer() { const [channels, setChannels] = useState([]); const [filtered, setFiltered] = useState([]); const [current, setCurrent] = useState(null); const [search, setSearch] = useState("");
-
-useEffect(() => { fetch("https://piyash-org.github.io/my-iptv/index.m3u") .then((res) => res.text()) .then(parseM3U); }, []);
-
-const parseM3U = (data) => { const lines = data.split("\n"); let temp = []; for (let i = 0; i < lines.length; i++) { if (lines[i].startsWith("#EXTINF")) { const title = lines[i].split(",").pop(); const logo = lines[i].match(/tvg-logo="(.?)"/); const group = lines[i].match(/group-title="(.?)"/); const url = lines[i + 1]; temp.push({ title, url, logo: logo ? logo[1] : "", group: group ? group[1] : "Uncategorized", }); } } setChannels(temp); setFiltered(temp); };
-
-const handleSearch = (e) => { const term = e.target.value.toLowerCase(); setSearch(term); setFiltered(channels.filter((ch) => ch.title.toLowerCase().includes(term))); };
-
-return ( <div className="bg-black text-white min-h-screen p-4"> <h1 className="text-2xl font-bold mb-4">GitHub IPTV Player</h1>
-
-<input
-    type="text"
-    value={search}
-    onChange={handleSearch}
-    placeholder="Search channels..."
-    className="p-2 mb-4 w-full text-black"
-  />
-
-  <div className="grid md:grid-cols-4 gap-4">
-    {filtered.map((ch, idx) => (
-      <div
-        key={idx}
-        className="bg-gray-800 p-2 rounded cursor-pointer hover:bg-gray-700"
-        onClick={() => setCurrent(ch)}
-      >
-        {ch.logo && <img src={ch.logo} alt="logo" className="w-full h-24 object-contain" />}
-        <div className="mt-2 text-center">{ch.title}</div>
-      </div>
-    ))}
-  </div>
-
-  {current && (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-2">Now Playing: {current.title}</h2>
-      <VideoPlayer url={current.url} />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPTV Player</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>📺 My IPTV Player</header>
+  <div class="container">
+    <div class="sidebar">
+      <h2>Channel List</h2>
+      <ul class="channel-list" id="channelList">
+        <!-- চ্যানেল লিস্ট এখানে স্ক্রিপ্ট থেকে আসবে -->
+      </ul>
     </div>
-  )}
-</div>
-
-); }
-
-function VideoPlayer({ url }) { const videoRef = React.useRef();
-
-useEffect(() => { if (Hls.isSupported()) { const hls = new Hls(); hls.loadSource(url); hls.attachMedia(videoRef.current); } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) { videoRef.current.src = url; } }, [url]);
-
-return ( <video
-ref={videoRef}
-controls
-autoPlay
-className="w-full max-w-3xl h-auto mx-auto border-2 border-white"
-/> ); }
+    <div class="player">
+      <video id="videoPlayer" controls autoplay></video>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
