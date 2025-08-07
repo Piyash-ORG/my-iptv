@@ -8,8 +8,37 @@ body {
 }
 
 h1 {
-  margin-bottom: 10px;
+  font-family: 'Poppins', sans-serif; /* ধাপ ১ এ যোগ করা সুন্দর ফন্ট */
+  font-size: 2.5em; /* সাইজ কিছুটা বড় করা হলো */
+  font-weight: 700;  /* লেখাকে বোল্ড করা হলো */
+  color: #E0E0E0; /* মূল রঙ */
+  
+  /* লেখার মধ্যে হালকা গ্রেডিয়েন্ট কালার দেওয়ার জন্য */
+  background: linear-gradient(145deg, #FFFFFF, #B0BEC5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+
+  letter-spacing: 2px; /* অক্ষরগুলোর মাঝে ফাঁকা জায়গা */
+  text-transform: uppercase; /* সব অক্ষর বড় হাতের করা হলো */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* লেখার পেছনে হালকা শ্যাডো */
+  
+  margin-bottom: 8px;
+  animation: fadeInDown 1s ease-out; /* হালকা অ্যানিমেশন যোগ করা হলো */
 }
+
+/* অ্যানিমেশনের জন্য keyframes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+    }
 
 .ad-banner { 
   background-color: #222; 
