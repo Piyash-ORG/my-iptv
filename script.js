@@ -7,11 +7,12 @@ const qualitySelector = document.getElementById("qualitySelector");
 let allChannels = [];
 let hls;
 
-// --- Infinite Scroll এর জন্য নতুন ভ্যারিয়েবল ---
-const CHANNELS_PER_LOAD = 20; // একবারে কতগুলো চ্যানেল লোড হবে
-let currentFilteredChannels = []; // ফিল্টার করা সম্পূর্ণ তালিকা
-let pageToLoad = 1; // পরবর্তী কোন পৃষ্ঠা লোড হবে
-let isLoading = false; // একাধিকবার লোড হওয়া থেকে বিরত রাখার জন্য
+// --- সব ফিচারের জন্য প্রয়োজনীয় ভ্যারিয়েবল ---
+const CHANNELS_PER_LOAD = 20;
+let currentFilteredChannels = [];
+let pageToLoad = 1;
+let isLoading = false;
+let currentChannelIndex = -1;
 // ------------------------------------------
 
 async function loadPlaylist() {
@@ -19,31 +20,35 @@ async function loadPlaylist() {
     const res = await fetch("index.m3u");
     if (!res.ok) throw new Error(`Failed to load playlist: ${res.status}`);
     const text = await res.text();
-    const lines = text.split("\n");
-    allChannels = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith("#EXTINF")) {
-        const meta = lines[i];
-        const url = lines[i + 1];
-        const nameMatch = meta.match(/,(.*)$/);
-        const logoMatch = meta.match(/tvg-logo="(.*?)"/);
-        const groupMatch = meta.match(/group-title="(.*?)"/);
-        const name = nameMatch ? nameMatch[1].trim() : "Unnamed";
-        const logo = logoMatch ? logoMatch[1] : "";
-        const group = groupMatch ? groupMatch[1] : "Others";
-        
-        if (url && name) {
-          allChannels.push({ name, logo, url, group });
-        }
-      }
-    }
+    allChannels = parseM3U(text);
     populateCategories();
     setupInitialView();
   } catch (error) {
     channelList.innerHTML = `<div style="color: red; padding: 20px;">Error: Could not load playlist.</div>`;
     console.error(error);
   }
+}
+
+function parseM3U(data) {
+  const lines = data.split("\n");
+  const channels = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].startsWith("#EXTINF")) {
+      const meta = lines[i];
+      const url = lines[i + 1];
+      const nameMatch = meta.match(/,(.*)$/);
+      const logoMatch = meta.match(/tvg-logo="(.*?)"/);
+      const groupMatch = meta.match(/group-title="(.*?)"/);
+      const name = nameMatch ? nameMatch[1].trim() : "Unnamed";
+      const logo = logoMatch ? logoMatch[1] : "";
+      const group = groupMatch ? groupMatch[1] : "Others";
+      
+      if (url && name) {
+        channels.push({ name, logo, url, group });
+      }
+    }
+  }
+  return channels;
 }
 
 function populateCategories() {
@@ -84,14 +89,14 @@ function loadMoreChannels() {
 
     if (channelsToRender.length === 0 && pageToLoad === 1) {
         channelList.innerHTML = `<div style="padding: 20px;">No channels found.</div>`;
-        isLoading = false;
-        return;
     }
 
-    channelsToRender.forEach(ch => {
+    channelsToRender.forEach((ch, localIndex) => {
+        const globalIndex = startIndex + localIndex; // চ্যানেলের আসল ইনডেক্স
         const div = document.createElement("div");
         div.className = "channel";
-        div.onclick = () => playStream(ch);
+        div.dataset.index = globalIndex; // প্রতিটি চ্যানেলকে চেনার জন্য ইনডেক্স যোগ করা
+        div.onclick = () => playStream(ch, globalIndex);
 
         const img = document.createElement("img");
         img.src = ch.logo || "https://via.placeholder.com/50";
@@ -110,33 +115,70 @@ function loadMoreChannels() {
 }
 
 channelList.addEventListener('scroll', () => {
-    // যখন স্ক্রলের প্রায় শেষে পৌঁছাবে
     if (channelList.scrollTop + channelList.clientHeight >= channelList.scrollHeight - 100) {
         loadMoreChannels();
     }
 });
 
+function playStream(channel, index) {
+  currentChannelIndex = index;
+  
+  // "Now Playing" হাইলাইট করার জন্য
+  document.querySelectorAll('.channel').forEach(d => d.classList.remove('active'));
+  const activeElement = document.querySelector(`.channel[data-index="${index}"]`);
+  if (activeElement) {
+    activeElement.classList.add('active');
+  }
 
-function playStream(channel) {
   if (hls) hls.destroy();
   const url = channel.url;
+
   if (url.endsWith('.m3u8')) {
     if (Hls.isSupported()) {
       hls = new Hls();
       hls.loadSource(url);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         video.play();
+        // কোয়ালিটি সিলেকটর আবার যোগ করা হলো
+        qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
+        const autoBtn = document.createElement("button");
+        autoBtn.textContent = "Auto";
+        autoBtn.onclick = () => { hls.currentLevel = -1; };
+        qualitySelector.appendChild(autoBtn);
+
+        data.levels.forEach((level, i) => {
+          const btn = document.createElement("button");
+          btn.textContent = `${level.height}p`;
+          btn.onclick = () => { hls.currentLevel = i; };
+          qualitySelector.appendChild(btn);
+        });
       });
     }
   } else {
     video.src = url;
     video.play();
+    qualitySelector.innerHTML = ""; // MP4 এর জন্য কোয়ালিটি সিলেকটর খালি রাখা
   }
 }
 
-// আগের অটোপ্লে নেক্সট এবং কোয়ালিটি সিলেকশন এই সিম্পল ভার্সনে নেই
-// সার্চ এবং ফিল্টার করলে নতুন করে লিস্ট দেখানো হবে
+// অটোপ্লে নেক্সট ফিচার আবার যোগ করা হলো
+function playNextVideo() {
+  if (currentFilteredChannels.length === 0 || currentChannelIndex === -1) return;
+
+  const nextIndex = (currentChannelIndex + 1) % currentFilteredChannels.length;
+  const nextChannel = currentFilteredChannels[nextIndex];
+
+  // পরের চ্যানেলটি যদি লোড না হয়ে থাকে, তাহলে লোড করা
+  const nextElement = document.querySelector(`.channel[data-index="${nextIndex}"]`);
+  if (!nextElement) {
+    loadMoreChannels();
+  }
+  
+  playStream(nextChannel, nextIndex);
+}
+
+video.addEventListener('ended', playNextVideo);
 searchInput.addEventListener("input", setupInitialView);
 categoryFilter.addEventListener("change", setupInitialView);
 
