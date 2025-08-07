@@ -62,3 +62,8 @@ video {
 #qualitySelector button:hover {
   background: #555;
 }
+#channelTitle {
+  font-size: 18px;
+  color: #0f0;
+  margin: 10px 0;
+}
