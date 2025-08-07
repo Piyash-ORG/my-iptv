@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📺 My IPTV Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #f0f0f0;
+      font-family: sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    video {
+      width: 100%;
+      max-width: 720px;
+      background: #000;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .channel {
+      background: #1f1f1f;
+      margin: 10px auto;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 90%;
+      max-width: 500px;
+      transition: background 0.3s;
+    }
+    .channel:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>📺 My IPTV Playlist</h1>
+  <video id="video" controls autoplay></video>
+  <div id="channelList">⏳ Loading channels...</div>
+
+  <script>
+    const video = document.getElementById('video');
+    const channelList = document.getElementById('channelList');
+
+    async function loadPlaylist() {
+      const res = await fetch("https://raw.githubusercontent.com/Piyash-ORG/my-iptv/main/index.m3u");
+      const data = await res.text();
+      const lines = data.split("\n");
+      channelList.innerHTML = '';
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith("#EXTINF")) {
+          const title = lines[i].split(",")[1] || "Unknown Channel";
+          const url = lines[i + 1];
+          const div = document.createElement("div");
+          div.className = "channel";
+          div.textContent = title;
+          div.onclick = () => playStream(url);
+          channelList.appendChild(div);
+        }
+      }
+    }
+
+    function playStream(url) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          video.play();
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.addEventListener('loadedmetadata', function () {
+          video.play();
+        });
+      }
+    }
+
+    loadPlaylist();
+  </script>
+</body>
+  </html>
