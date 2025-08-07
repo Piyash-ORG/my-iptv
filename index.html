@@ -3,22 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IPTV Player</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>📺 IPTV Player</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
-  <header>📺 My IPTV Player</header>
-  <div class="container">
-    <div class="sidebar">
-      <h2>Channel List</h2>
-      <ul class="channel-list" id="channelList">
-        <!-- চ্যানেল লিস্ট এখানে স্ক্রিপ্ট থেকে আসবে -->
-      </ul>
-    </div>
-    <div class="player">
-      <video id="videoPlayer" controls autoplay></video>
-    </div>
+  <header>
+    <h1>📺 IPTV Player</h1>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="search-filter">
+        <input type="text" id="search" placeholder="🔍 Search channels...">
+        <select id="categoryFilter"></select>
+      </div>
+      <div id="channelList" class="channel-list"></div>
+    </aside>
+
+    <main class="player-section">
+      <div id="channelTitle" class="channel-title">Select a channel</div>
+      <video id="video" controls autoplay></video>
+      <div id="qualitySelector" class="quality-controls"></div>
+    </main>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
