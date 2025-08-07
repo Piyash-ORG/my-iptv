@@ -138,3 +138,28 @@ video {
 .ad-banner a:hover {
     transform: scale(1.05); /* হোভার করলে হালকা জুম হবে */
 }
+.hero-header {
+  background: linear-gradient(135deg, #ff0066, #6600ff);
+  color: white;
+  padding: 40px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.hero-header h1 {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+.hero-header h1 span {
+  font-size: 2.4rem;
+  color: yellow;
+}
+
+.hero-header .subtitle {
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #fff8;
+}
