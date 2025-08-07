@@ -109,7 +109,7 @@ function playStream(url) {
     hls.on(Hls.Events.MANIFEST_PARSED, function () {
       video.play();
       const levels = hls.levels;
-      qualitySelector.innerHTML = "<b>🔧 Quality:</b> ";
+      qualitySelector.innerHTML = "<b>Quality:</b> ";
 
       // Auto Quality Button
       const autoBtn = document.createElement("button");
