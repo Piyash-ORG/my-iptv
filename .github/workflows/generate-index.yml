@@ -1,0 +1,29 @@
+name: Generate index.m3u
+
+on:
+  push:
+    paths:
+      - 'streams/*.m3u'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate index.m3u
+        run: |
+          echo "#EXTM3U" > streams/index.m3u
+          for file in streams/*.m3u; do
+            tail -n +2 "$file" >> streams/index.m3u
+          done
+          mv streams/index.m3u ./index.m3u
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add index.m3u
+          git commit -m "Auto-update index.m3u"
+          git push
