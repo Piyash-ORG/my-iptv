@@ -3,10 +3,8 @@ const channelList = document.getElementById("channelList");
 const searchInput = document.getElementById("search");
 const categoryFilter = document.getElementById("categoryFilter");
 const qualitySelector = document.getElementById("qualitySelector");
-const channelTitle = document.getElementById("channelTitle");
 
 let allChannels = [];
-let hls;
 
 async function loadPlaylist() {
   const res = await fetch("index.m3u");
@@ -61,7 +59,7 @@ function showChannels() {
   filtered.forEach(ch => {
     const div = document.createElement("div");
     div.className = "channel";
-    div.onclick = () => playStream(ch.url, ch.name); // ✅ নাম পাঠানো
+    div.onclick = () => playStream(ch.url);
 
     const img = document.createElement("img");
     img.src = ch.logo || "https://via.placeholder.com/50";
@@ -75,9 +73,9 @@ function showChannels() {
   });
 }
 
-function playStream(url, name = "Now Playing") {
-  channelTitle.textContent = name; // ✅ টাইটেল দেখানো
+let hls;
 
+function playStream(url) {
   if (hls) {
     hls.destroy();
     hls = null;
