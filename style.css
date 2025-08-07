@@ -8,23 +8,24 @@ body {
 }
 
 h1 {
-  font-family: 'Poppins', sans-serif; /* ধাপ ১ এ যোগ করা সুন্দর ফন্ট */
-  font-size: 2.5em; /* সাইজ কিছুটা বড় করা হলো */
-  font-weight: 700;  /* লেখাকে বোল্ড করা হলো */
-  color: #E0E0E0; /* মূল রঙ */
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #E0E0E0;
   
-  /* লেখার মধ্যে হালকা গ্রেডিয়েন্ট কালার দেওয়ার জন্য */
   background: linear-gradient(145deg, #FFFFFF, #B0BEC5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
 
-  letter-spacing: 1px; /* অক্ষরগুলোর মাঝে ফাঁকা জায়গা */
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* লেখার পেছনে হালকা শ্যাডো */
+  letter-spacing: 2px;
+  text-transform: none; /* <-- নিশ্চিত করুন এই লাইনটি আছে বা লাইনটি মুছে দেওয়া হয়েছে */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   
+  margin-top: 0;
   margin-bottom: 8px;
-  animation: fadeInDown 1s ease-out; /* হালকা অ্যানিমেশন যোগ করা হলো */
+  animation: fadeInDown 1s ease-out;
 }
 
 /* অ্যানিমেশনের জন্য keyframes */
