@@ -5,10 +5,12 @@ const categoryFilter = document.getElementById("categoryFilter");
 const qualitySelector = document.getElementById("qualitySelector");
 
 let allChannels = [];
+let currentlyDisplayedChannels = []; // বর্তমানে দেখানো চ্যানেলগুলোর তালিকা রাখার জন্য
+let currentChannelIndex = -1; // বর্তমানে কোন চ্যানেলটি চলছে তার ইনডেক্স রাখার জন্য
 
 async function loadPlaylist() {
   try {
-    const res = await fetch("index.m3u"); // নিশ্চিত করুন আপনার প্লেলিস্ট ফাইলের নাম index.m3u
+    const res = await fetch("index.m3u");
     if (!res.ok) {
         throw new Error(`Failed to load playlist: ${res.status} ${res.statusText}`);
     }
@@ -21,19 +23,14 @@ async function loadPlaylist() {
         const meta = lines[i];
         const url = lines[i + 1];
 
-        // --- মূল পরিবর্তনটি এখানে করা হয়েছে ---
-        // tvg-name এর পরিবর্তে কমা'র (,) পর থেকে নাম খোঁজা হচ্ছে
-        const nameMatch = meta.match(/,(.*)$/); 
-        
+        const nameMatch = meta.match(/,(.*)$/);
         const logoMatch = meta.match(/tvg-logo="(.*?)"/);
         const groupMatch = meta.match(/group-title="(.*?)"/);
 
-        // .trim() যোগ করা হয়েছে যাতে নামের আগে-পরের অপ্রয়োজনীয় স্পেস মুছে যায়
-        const name = nameMatch ? nameMatch[1].trim() : "Unnamed Channel"; 
+        const name = nameMatch ? nameMatch[1].trim() : "Unnamed Channel";
         const logo = logoMatch ? logoMatch[1] : "";
         const group = groupMatch ? groupMatch[1] : "Others";
         
-        // শুধুমাত্র যদি url এবং name ঠিকমতো পাওয়া যায়, তবেই লিস্টে যোগ করা হবে
         if (url && name !== "Unnamed Channel") {
           allChannels.push({ name, logo, url, group });
         }
@@ -71,19 +68,21 @@ function showChannels() {
     );
   });
   
+  currentlyDisplayedChannels = filtered; 
+
   if (filtered.length === 0) {
     channelList.innerHTML = `<div style="padding: 20px;">No channels found.</div>`;
     return;
   }
 
-  filtered.forEach(ch => {
+  filtered.forEach((ch, index) => {
     const div = document.createElement("div");
     div.className = "channel";
-    div.onclick = () => playStream(ch.url);
+    div.onclick = () => playStream(ch, index); 
 
     const img = document.createElement("img");
     img.src = ch.logo || "https://via.placeholder.com/50";
-    img.onerror = () => { img.src = "https://via.placeholder.com/50"; }; // ভাঙ্গা লোগো লিঙ্ক এর সমাধান
+    img.onerror = () => { img.src = "https://via.placeholder.com/50"; };
 
     const nameSpan = document.createElement("span");
     nameSpan.textContent = ch.name;
@@ -96,14 +95,16 @@ function showChannels() {
 
 let hls;
 
-function playStream(url) {
+function playStream(channel, index) {
+  currentChannelIndex = index;
+  
   if (hls) {
     hls.destroy();
   }
 
   if (Hls.isSupported()) {
     hls = new Hls();
-    hls.loadSource(url);
+    hls.loadSource(channel.url);
     hls.attachMedia(video);
 
     hls.on(Hls.Events.MANIFEST_PARSED, function () {
@@ -111,13 +112,11 @@ function playStream(url) {
       const levels = hls.levels;
       qualitySelector.innerHTML = "<b>Quality:</b> ";
 
-      // Auto Quality Button
       const autoBtn = document.createElement("button");
       autoBtn.textContent = "Auto";
       autoBtn.onclick = () => { hls.currentLevel = -1; };
       qualitySelector.appendChild(autoBtn);
 
-      // Other Quality Buttons
       levels.forEach((level, i) => {
         const btn = document.createElement("button");
         btn.textContent = `${level.height}p`;
@@ -126,13 +125,24 @@ function playStream(url) {
       });
     });
   } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = url;
+    video.src = channel.url;
     video.addEventListener("loadedmetadata", () => video.play());
   }
 }
 
+function playNextVideo() {
+  if (currentlyDisplayedChannels.length === 0 || currentChannelIndex === -1) {
+    return;
+  }
+
+  const nextIndex = (currentChannelIndex + 1) % currentlyDisplayedChannels.length;
+  const nextChannel = currentlyDisplayedChannels[nextIndex];
+  playStream(nextChannel, nextIndex);
+}
+
+video.addEventListener('ended', playNextVideo);
+
 searchInput.addEventListener("input", showChannels);
 categoryFilter.addEventListener("change", showChannels);
 
-// অ্যাপলিকেশন শুরু করার জন্য ফাংশন কল
 loadPlaylist();
