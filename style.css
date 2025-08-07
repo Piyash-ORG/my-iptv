@@ -1,3 +1,96 @@
+body {
+  background: #121212;
+  color: #eee;
+  font-family: sans-serif;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+video {
+  width: 100%;
+  max-width: 720px;
+  background: #000;
+  border-radius: 10px;
+  margin: 10px auto;
+  display: block;
+}
+
+.controls {
+  margin-bottom: 15px;
+}
+
+#search,
+#categoryFilter {
+  padding: 10px;
+  margin: 5px;
+  width: 90%;
+  max-width: 350px;
+  border-radius: 5px;
+  border: none;
+  background-color: #1f1f1f;
+  color: #eee;
+}
+
+#channelList {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.channel {
+  background: #1f1f1f;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.channel:hover {
+  background: #333;
+}
+
+.channel img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: white;
+}
+
+#qualitySelector {
+  margin: 10px;
+}
+
+#qualitySelector button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+
+#qualitySelector button:hover {
+  background: #555;
+}
+
+.channel.active {
+  border: 2px solid lime;
+}
 /* Favorite Button Style */
 .channel {
   position: relative; /* বাটনটির সঠিক পজিশনিং এর জন্য */
