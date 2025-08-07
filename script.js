@@ -5,8 +5,8 @@ const categoryFilter = document.getElementById("categoryFilter");
 const qualitySelector = document.getElementById("qualitySelector");
 
 let allChannels = [];
-let currentlyDisplayedChannels = []; // বর্তমানে দেখানো চ্যানেলগুলোর তালিকা রাখার জন্য
-let currentChannelIndex = -1; // বর্তমানে কোন চ্যানেলটি চলছে তার ইনডেক্স রাখার জন্য
+let currentlyDisplayedChannels = []; 
+let currentChannelIndex = -1; 
 
 async function loadPlaylist() {
   try {
@@ -97,38 +97,48 @@ let hls;
 
 function playStream(channel, index) {
   currentChannelIndex = index;
-  
+
   if (hls) {
     hls.destroy();
   }
+  
+  const url = channel.url;
 
-  if (Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(channel.url);
-    hls.attachMedia(video);
+  if (url.endsWith('.m3u8')) {
+    if (Hls.isSupported()) {
+      hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
 
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-      video.play();
-      const levels = hls.levels;
-      qualitySelector.innerHTML = "<b>Quality:</b> ";
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+        const levels = hls.levels;
+        qualitySelector.innerHTML = "<b>Quality:</b> ";
 
-      const autoBtn = document.createElement("button");
-      autoBtn.textContent = "Auto";
-      autoBtn.onclick = () => { hls.currentLevel = -1; };
-      qualitySelector.appendChild(autoBtn);
+        const autoBtn = document.createElement("button");
+        autoBtn.textContent = "Auto";
+        autoBtn.onclick = () => { hls.currentLevel = -1; };
+        qualitySelector.appendChild(autoBtn);
 
-      levels.forEach((level, i) => {
-        const btn = document.createElement("button");
-        btn.textContent = `${level.height}p`;
-        btn.onclick = () => { hls.currentLevel = i; };
-        qualitySelector.appendChild(btn);
+        levels.forEach((level, i) => {
+          const btn = document.createElement("button");
+          btn.textContent = `${level.height}p`;
+          btn.onclick = () => { hls.currentLevel = i; };
+          qualitySelector.appendChild(btn);
+        });
       });
-    });
-  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = channel.url;
-    video.addEventListener("loadedmetadata", () => video.play());
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = url;
+      video.addEventListener("loadedmetadata", () => video.play());
+    }
+  } 
+  else {
+    video.src = url;
+    video.play();
+    qualitySelector.innerHTML = ""; 
   }
 }
+
 
 function playNextVideo() {
   if (currentlyDisplayedChannels.length === 0 || currentChannelIndex === -1) {
