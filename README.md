@@ -1,24 +1,25 @@
-#  IPTV Player 📺
+# My IPTV Player 📺
 
-A simple, modern, and feature-rich web-based M3U playlist player built with vanilla HTML, CSS, and JavaScript.
+A versatile, web-based player for all your M3U content, including **Live TV**, **Movies**, **Web Series**, and **FM Radio**. Built with vanilla HTML, CSS, and JavaScript.
 
 **[➡️ Live Demo](https://jiocreator.github.io/streaming/)**
 
 
+
 ## ✨ Features
 
-* **Multiple Playlists**: Loads and merges multiple `.m3u` playlists from different URLs.
-* **Dual View Modes**: Switch between a clean **List View** and a modern **Grid View**.
-* **Infinite Scroll**: Smoothly handles thousands of channels by loading them as you scroll.
-* **Advanced Filtering**:
+* **Multi-Content Support**: Seamlessly plays various media types like Live TV channels (`.m3u8`), Movies/VOD (`.mp4`), and live FM Radio streams.
+* **Multiple Playlists**: Loads and merges multiple `.m3u` playlists from different URLs into a single, unified library.
+* **Dual View Modes**: Switch between a detailed **List View** and a modern, thumbnail-focused **Grid View**.
+* **Infinite Scroll**: Smoothly handles thousands of items by loading them as you scroll, ensuring fast performance.
+* **Advanced Filtering & Sorting**:
     * Filter by **Category**.
-    * **Search** by channel name.
-    * **Sort** channels (Default, Newest, A-Z, Z-A).
-* **Favorite System**: **Long-press (1.5s)** any channel to add or remove it from your personal favorites list, which is saved in your browser.
-* **HLS & MP4 Support**: Plays both HLS (`.m3u8`) and standard MP4 video streams.
+    * Instantly **Search** by name.
+    * **Sort** content (Default, Newest, A-Z, Z-A).
+* **Favorite System**: **Long-press (1.5s)** any item to add or remove it from your personal favorites list, which is saved in your browser.
 * **Quality Selector**: Automatically shows available quality options for HLS streams.
-* **Autoplay Next**: Automatically plays the next channel in the current list when one finishes.
-* **Lazy Loading**: Images are loaded only when they scroll into view for faster performance.
+* **Autoplay Next**: Automatically plays the next item in the current list when one finishes.
+* **Lazy Loading**: Images are loaded only when they scroll into view for a faster initial load.
 * **Responsive Design**: Works smoothly on both desktop and mobile devices.
 
 ## 🚀 How to Use Your Own Playlists
@@ -30,8 +31,8 @@ A simple, modern, and feature-rich web-based M3U playlist player built with vani
 
     ```javascript
     const playlistUrls = [
-        "https://.../your_playlist1.m3u",
-        "https://.../your_playlist2.m3u"
+        "https://.../your_tv_channels.m3u",
+        "https://.../your_movies.m3u"
     ];
     ```
 5.  Commit your changes, and your player will load your custom playlists.
