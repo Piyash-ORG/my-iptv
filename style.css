@@ -58,3 +58,10 @@ video { width: 100%; max-width: 720px; background: #000; border-radius: 10px; ma
 #loadingSpinner { width: 40px; height: 40px; border: 4px solid #555; border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
 #loadingSpinner.hidden { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/*My csss*/
+.footer-text {
+    margin-top: 25px;
+    color: #888; /* হালকা ধূসর রঙ */
+    font-size: 0.9em;
+}
