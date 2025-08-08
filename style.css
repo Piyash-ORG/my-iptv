@@ -65,6 +65,16 @@ video { width: 100%; max-width: 720px; background: #000; border-radius: 10px; ma
     color: #888; /* হালকা ধূসর রঙ */
     font-size: 0.9em;
 }
+.zoom-instruction {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 /* --- সোশ্যাল আইকনের জন্য নতুন স্টাইল --- */
 .social-links {
     margin-top: 15px;
