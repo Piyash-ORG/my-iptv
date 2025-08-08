@@ -65,3 +65,22 @@ video { width: 100%; max-width: 720px; background: #000; border-radius: 10px; ma
     color: #888; /* হালকা ধূসর রঙ */
     font-size: 0.9em;
 }
+/* --- সোশ্যাল আইকনের জন্য নতুন স্টাইল --- */
+.social-links {
+    margin-top: 15px;
+    padding-bottom: 10px;
+}
+
+.social-links a {
+    font-size: 2em; /* আইকনের সাইজ */
+    color: #888; /* ডিফল্ট রঙ */
+    margin: 0 15px; /* আইকনগুলোর মধ্যে ফাঁকা জায়গা */
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.social-links a:hover {
+    color: #00aaff; /* হোভার করলে রঙ পরিবর্তন হবে */
+    transform: scale(1.2); /* হোভার করলে হালকা বড় হবে */
+}
+
