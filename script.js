@@ -13,11 +13,11 @@ let pageToLoad = 1;
 let isLoading = false;
 let currentChannelIndex = -1;
 
-// --- আপনার সব M3U ফাইলের লিঙ্ক এখানে যোগ করুন ---
+// --- m3u configure ---
 const playlistUrls = [
     "index.m3u",
     "videos.m3u",
-    // আপনি এখানে আরও লিঙ্ক যোগ করতে পারেন
+    // add more m3u
 ];
 // ---------------------------------------------------
 
@@ -25,22 +25,22 @@ const playlistUrls = [
 async function loadAllPlaylists() {
     channelList.innerHTML = '⏳ Loading all playlists...';
     try {
-        // সব প্লেলিস্ট একসাথে ফেচ করার জন্য Promise.all ব্যবহার করা হয়েছে
+        
         const responses = await Promise.all(
             playlistUrls.map(url => fetch(url).catch(e => console.error(`Failed to fetch ${url}`, e)))
         );
 
-        // সব রেসপন্স থেকে টেক্সট ডেটা বের করা হচ্ছে
+        
         const textPromises = responses.map(res => {
             if (res && res.ok) {
                 return res.text();
             }
-            return Promise.resolve(""); // যদি কোনো একটি লিঙ্ক ফেল করে
+            return Promise.resolve(""); 
         });
         
         const allTexts = await Promise.all(textPromises);
 
-        // সব প্লেলিস্টের ডেটা একত্রিত করে একটি বড় অ্যারে তৈরি করা
+        
         let combinedChannels = [];
         allTexts.forEach(text => {
             if (text) {
@@ -84,10 +84,10 @@ function parseM3U(data) {
 
 function populateCategories() {
   const groups = new Set(allChannels.map(ch => ch.group));
-  categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+  categoryFilter.innerHTML = `<option value="">📂 All Categories</option>`;
   
   const favOpt = document.createElement("option");
-  favOpt.value = "Favorites";
+  favOpt.value = "🌟 Favorites";
   favOpt.textContent = "Favorites";
   categoryFilter.appendChild(favOpt);
 
@@ -256,5 +256,4 @@ video.addEventListener('ended', playNextVideo);
 searchInput.addEventListener("input", setupInitialView);
 categoryFilter.addEventListener("change", setupInitialView);
 
-// অ্যাপলিকেশন শুরু করার জন্য ফাংশন কল
 loadAllPlaylists();
