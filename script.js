@@ -25,10 +25,10 @@ const appState = {
 
 // --- আপনার প্লেলিস্টের তালিকা পুনরুদ্ধার করা হলো ---
 const playlistUrls = [
-    "index.m3u",
-    "quran-bangla.m3u",
-    "videos.m3u",
-    "movies.m3u"
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/channels.m3u",
+    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/quran-bangla.m3u",
+    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/vod.m3u",
+    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/..m3u"
 ];
 
 // --- Lazy Loading Images (Intersection Observer) ---
