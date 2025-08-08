@@ -17,6 +17,7 @@ let currentChannelIndex = -1;
 const playlistUrls = [
     "index.m3u",
     "videos.m3u",
+    "quran-bangla.m3u",
     // add more m3u
 ];
 // ---------------------------------------------------
