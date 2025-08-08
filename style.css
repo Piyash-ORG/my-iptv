@@ -94,3 +94,27 @@ video { width: 100%; max-width: 720px; background: #000; border-radius: 10px; ma
     transform: scale(1.2); /* হোভার করলে হালকা বড় হবে */
 }
 
+/* --- Contact Us বাটনের জন্য নতুন স্টাইল --- */
+.contact-section {
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.contact-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff; /* নীল রঙ */
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+.contact-btn:hover {
+    background-color: #0056b3; /* হোভার করলে রঙ পরিবর্তন হবে */
+    transform: scale(1.05);
+}
