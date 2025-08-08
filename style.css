@@ -19,7 +19,7 @@ h1 {
   background-clip: text;
   text-fill-color: transparent;
 
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: none; /* <-- নিশ্চিত করুন এই লাইনটি আছে বা লাইনটি মুছে দেওয়া হয়েছে */
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   
