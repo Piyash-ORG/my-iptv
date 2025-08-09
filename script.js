@@ -34,7 +34,7 @@ const playlistUrls = [
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/dirilis-ertugrul.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/kurulus-osman.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/alp-arsalan.m3u",
-    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/the-great-seljuk.m3u"
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/the-great-seljuk.m3u",
 ];
 
 // --- Lazy Loading Images ---
