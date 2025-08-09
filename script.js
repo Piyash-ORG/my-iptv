@@ -348,3 +348,35 @@ document.addEventListener('mouseup', (event) => {
 });
 // Automatically update the copyright year
 document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+// --- প্রতিদিন প্রথম ক্লিকের জন্য অ্যাড দেখানোর কোড ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ১. আপনার Adsterra ডিরেক্ট লিঙ্কটি এখানে বসান
+    const adsterraDirectLink = 'https://www.profitableratecpm.com/yrygzszmx?key=b43ea4afe6263aed815797a0ebb4f75d';
+    
+    const storageKey = 'lastAdRedirectTime';
+    const twentyFourHours = 24 * 60 * 60 * 1000; // ২৪ ঘণ্টা মিলিসেকেন্ডে
+
+    // ২. localStorage থেকে শেষবার অ্যাড দেখানোর সময় বের করা
+    const lastAdTime = localStorage.getItem(storageKey);
+    const currentTime = new Date().getTime();
+
+    // ৩. চেক করা হচ্ছে শেষবার অ্যাড দেখানোর পর ২৪ ঘণ্টা পার হয়েছে কিনা
+    if (!lastAdTime || (currentTime - lastAdTime > twentyFourHours)) {
+        
+        // ৪. যদি ২৪ ঘণ্টা পার হয়ে যায়, তাহলে পুরো পেজে প্রথম ক্লিকের জন্য একটি ইভেন্ট সেট করা
+        document.body.addEventListener('click', function handleFirstClick() {
+            
+            // ৫. অ্যাডের লিঙ্কটি একটি নতুন ট্যাবে খোলা (pop-under effect)
+            window.open(adsterraDirectLink, '_blank');
+            
+            // ৬. বর্তমান সময়কে localStorage-এ সেভ করা, যাতে পরের ২৪ ঘণ্টায় আর অ্যাড না দেখায়
+            localStorage.setItem(storageKey, currentTime);
+            
+            // ৭. এই ইভেন্টটি সরিয়ে ফেলা, যাতে এটি শুধু একবারই কাজ করে
+            document.body.removeEventListener('click', handleFirstClick);
+            
+        }, { once: true }); // { once: true } নিশ্চিত করে যে ইভেন্টটি শুধু একবারই রান হবে
+    }
+});
