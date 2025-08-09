@@ -29,9 +29,8 @@ const appState = {
 const playlistUrls = [
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/channels.m3u",
     "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/quran-bangla.m3u",
-    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/vod-ott.m3u",
-    "https://raw.githubusercontent.com/jiocreator/streaming/refs/heads/main/streams/vod.m3u",
-    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/..m3u",
+    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/vod.m3u",
+    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/..m3u"
 ];
 
 // --- Lazy Loading Images ---
