@@ -45,7 +45,7 @@ body {
   --primary: #4361ee;
   --accent: #4895ef;
   --dark: #1a1a2e;
-  --darker: #0d0d1a;
+  --darker: #000000; /* Pure black for AMOLED */
 }
 
 .main-header {
@@ -53,12 +53,13 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 2rem;
-  background: linear-gradient(135deg, var(--dark), var(--darker));
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #000000, #111111); /* AMOLED gradient */
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.8);
   position: relative;
   z-index: 100;
   border-radius: 15px;
   margin: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
 }
 
 .header-title-container {
@@ -125,7 +126,6 @@ body {
     font-size: 1.8rem;
   }
 }
-
 /* =================================
    Controls: Search, Filter, Sort
    ================================= */
