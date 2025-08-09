@@ -98,6 +98,7 @@ const appState = {
 const playlistUrls = [
     "https://raw.githubusercontent.com/jiocreator/streaming/refs/heads/main/streams/live-events.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/quran-bangla.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/channels.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/vod.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/movies.m3u",
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/dirilis-ertugrul.m3u",
