@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const adGateOverlay = document.getElementById('ad-gate-overlay');
     // ... আপনার বাকি অ্যাড গেট কোডটি এখানে থাকবে ...
-});
 
 // --- অ্যাড গেট সিস্টেম ---
 document.addEventListener('DOMContentLoaded', () => {
