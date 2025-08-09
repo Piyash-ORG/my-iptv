@@ -5,20 +5,28 @@ const isAdGateEnabled = false; // অ্যাড গেট চালু কর�
 
 // --- অ্যাড গেট সিস্টেম ---
 document.addEventListener('DOMContentLoaded', () => {
-    // নতুন এই লাইনটি যোগ করা হয়েছে
-    if (!isAdGateEnabled) return; 
+    // প্রথমে চেক করা হচ্ছে অ্যাড গেট চালু আছে কিনা
+    if (!isAdGateEnabled) {
+        // যদি false থাকে, তাহলে অ্যাড গেট না দেখিয়ে সরাসরি সাইট চালু হবে
+        const adGateOverlay = document.getElementById('ad-gate-overlay');
+        if(adGateOverlay) {
+           adGateOverlay.style.display = 'none';
+        }
+        return; 
+    }
 
-    const adGateOverlay = document.getElementById('ad-gate-overlay');
-    // ... আপনার বাকি অ্যাড গেট কোডটি এখানে থাকবে ...
-
-// --- অ্যাড গেট সিস্টেম ---
-document.addEventListener('DOMContentLoaded', () => {
+    // যদি true থাকে, তাহলে নিচের কোডগুলো কাজ করবে
     const adGateOverlay = document.getElementById('ad-gate-overlay');
     const unlockButton = document.getElementById('unlockButton');
     const adLink = 'https://www.profitableratecpm.com/yrygzszmx?key=b43ea4afe6263aed815797a0ebb4f75d';
+    const storageKey = 'lastAdUnlockTime';
+    const twentyFourHours = 24 * 60 * 60 * 1000; // ২৪ ঘণ্টা
 
-    // চেক করা হচ্ছে সেশনটি ইতিমধ্যে আনলক করা আছে কিনা
-    if (localStorage.getItem('isUnlockedToday')) {
+    const lastUnlockTime = localStorage.getItem(storageKey);
+    const currentTime = new Date().getTime();
+
+    // চেক করা হচ্ছে শেষবার আনলক করার পর ২৪ ঘণ্টা পার হয়েছে কিনা
+    if (lastUnlockTime && (currentTime - lastUnlockTime < twentyFourHours)) {
         adGateOverlay.style.display = 'none';
     } else {
         adGateOverlay.style.display = 'flex';
@@ -30,35 +38,34 @@ document.addEventListener('DOMContentLoaded', () => {
         unlockButton.disabled = true;
 
         let timeWaited = 0;
-        const requiredWaitTime = 10; // ১০ সেকেন্ড
+        const requiredWaitTime = 10;
 
         const timer = setInterval(() => {
-            // যদি ব্যবহারকারী অ্যাড ট্যাবটি বন্ধ করে দেয়
             if (adWindow.closed) {
                 clearInterval(timer);
                 alert("Please do not close the ad page before 10 seconds.");
-                window.location.href = adLink; // মূল পেজটিকেই রিডাইরেক্ট করে দেওয়া
+                window.location.href = adLink;
                 return;
             }
             
             timeWaited++;
             unlockButton.textContent = `Waiting... ${requiredWaitTime - timeWaited}s`;
 
-            // যদি ১০ সেকেন্ড অপেক্ষা সম্পন্ন হয়
             if (timeWaited >= requiredWaitTime) {
                 clearInterval(timer);
-                localStorage.setItem('isUnlockedToday', 'true'); // <-- সেশন আনলক করা হলো
-                adGateOverlay.style.display = 'none'; // ওভারলেটি লুকিয়ে ফেলা হলো
+                localStorage.setItem(storageKey, currentTime); // বর্তমান সময় সেভ করা হলো
+                adGateOverlay.style.display = 'none';
                 try {
-                   adWindow.close(); // অ্যাড ট্যাবটি বন্ধ করার চেষ্টা
+                   adWindow.close();
                 } catch (e) {
-                   console.warn("Could not close ad window due to browser restrictions.");
+                   console.warn("Could not close ad window.");
                 }
             }
-        }, 1000); // প্রতি সেকেন্ডে চেক করা হচ্ছে
+        }, 1000);
     });
 });
 // ----------------------
+
 
 // --- Element References ---
 const video = document.getElementById("video");
