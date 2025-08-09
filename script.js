@@ -28,9 +28,13 @@ const appState = {
 // --- আপনার মাল্টিপল M3U প্লেলিস্টের URL পুনরুদ্ধার করা হলো ---
 const playlistUrls = [
     "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/channels.m3u",
-    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/quran-bangla.m3u",
-    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/vod.m3u",
-    "https://cdn.statically.io/gh/jiocreator/streaming/main/streams/..m3u"
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/quran-bangla.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/vod.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/movies.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/dirilis-ertugrul.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/kurulus-osman.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/alp-arsalan.m3u",
+    "https://cdn.jsdelivr.net/gh/jiocreator/streaming@main/streams/the-great-seljuk.m3u"
 ];
 
 // --- Lazy Loading Images ---
