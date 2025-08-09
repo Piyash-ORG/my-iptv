@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adLink = 'https://www.profitableratecpm.com/yrygzszmx?key=b43ea4afe6263aed815797a0ebb4f75d';
 
     // চেক করা হচ্ছে সেশনটি ইতিমধ্যে আনলক করা আছে কিনা
-    if (sessionStorage.getItem('isUnlocked')) {
+    if (localStorage.getItem('isUnlockedToday')) {
         adGateOverlay.style.display = 'none';
     } else {
         adGateOverlay.style.display = 'flex';
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // যদি ১০ সেকেন্ড অপেক্ষা সম্পন্ন হয়
             if (timeWaited >= requiredWaitTime) {
                 clearInterval(timer);
-                sessionStorage.setItem('isUnlocked', 'true'); // সেশন আনলক করা হলো
+                localStorage.setItem('isUnlockedToday', 'true'); // <-- সেশন আনলক করা হলো
                 adGateOverlay.style.display = 'none'; // ওভারলেটি লুকিয়ে ফেলা হলো
                 try {
                    adWindow.close(); // অ্যাড ট্যাবটি বন্ধ করার চেষ্টা
