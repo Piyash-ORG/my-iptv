@@ -1,3 +1,17 @@
+// --- অ্যাড গেট সিস্টেম চালু বা বন্ধ করার জন্য ---
+const isAdGateEnabled = false; // অ্যাড গেট চালু করতে true, বন্ধ করতে false দিন
+// ------------------------------------------
+
+
+// --- অ্যাড গেট সিস্টেম ---
+document.addEventListener('DOMContentLoaded', () => {
+    // নতুন এই লাইনটি যোগ করা হয়েছে
+    if (!isAdGateEnabled) return; 
+
+    const adGateOverlay = document.getElementById('ad-gate-overlay');
+    // ... আপনার বাকি অ্যাড গেট কোডটি এখানে থাকবে ...
+});
+
 // --- অ্যাড গেট সিস্টেম ---
 document.addEventListener('DOMContentLoaded', () => {
     const adGateOverlay = document.getElementById('ad-gate-overlay');
