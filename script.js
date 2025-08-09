@@ -1,3 +1,52 @@
+// --- অ্যাড গেট সিস্টেম ---
+document.addEventListener('DOMContentLoaded', () => {
+    const adGateOverlay = document.getElementById('ad-gate-overlay');
+    const unlockButton = document.getElementById('unlockButton');
+    const adLink = 'https://www.profitableratecpm.com/yrygzszmx?key=b43ea4afe6263aed815797a0ebb4f75d';
+
+    // চেক করা হচ্ছে সেশনটি ইতিমধ্যে আনলক করা আছে কিনা
+    if (sessionStorage.getItem('isUnlocked')) {
+        adGateOverlay.style.display = 'none';
+    } else {
+        adGateOverlay.style.display = 'flex';
+    }
+
+    unlockButton.addEventListener('click', () => {
+        const adWindow = window.open(adLink, '_blank');
+        unlockButton.textContent = "Please wait 10 seconds...";
+        unlockButton.disabled = true;
+
+        let timeWaited = 0;
+        const requiredWaitTime = 10; // ১০ সেকেন্ড
+
+        const timer = setInterval(() => {
+            // যদি ব্যবহারকারী অ্যাড ট্যাবটি বন্ধ করে দেয়
+            if (adWindow.closed) {
+                clearInterval(timer);
+                alert("Please do not close the ad page before 10 seconds.");
+                window.location.href = adLink; // মূল পেজটিকেই রিডাইরেক্ট করে দেওয়া
+                return;
+            }
+            
+            timeWaited++;
+            unlockButton.textContent = `Waiting... ${requiredWaitTime - timeWaited}s`;
+
+            // যদি ১০ সেকেন্ড অপেক্ষা সম্পন্ন হয়
+            if (timeWaited >= requiredWaitTime) {
+                clearInterval(timer);
+                sessionStorage.setItem('isUnlocked', 'true'); // সেশন আনলক করা হলো
+                adGateOverlay.style.display = 'none'; // ওভারলেটি লুকিয়ে ফেলা হলো
+                try {
+                   adWindow.close(); // অ্যাড ট্যাবটি বন্ধ করার চেষ্টা
+                } catch (e) {
+                   console.warn("Could not close ad window due to browser restrictions.");
+                }
+            }
+        }, 1000); // প্রতি সেকেন্ডে চেক করা হচ্ছে
+    });
+});
+// ----------------------
+
 // --- Element References ---
 const video = document.getElementById("video");
 const channelList = document.getElementById("channelList");
